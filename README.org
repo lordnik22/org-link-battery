@@ -1,7 +1,7 @@
 * Org Link Battery
 
-If you use [org-roam](https://github.com/org-roam/org-roam) or
-[org-brain](https://github.com/Kungsgeten/org-brain) this package is
+If you use [[https://github.com/org-roam/org-roam][GitHub - org-roam/org-roam: Rudimentary Roam replica with Org-mode]] or
+[[https://github.com/Kungsgeten/org-brain][GitHub - Kungsgeten/org-brain: Org-mode wiki + concept-mapping]] this package is
 rather useless to you.
 
 It adds a completion-company-backend based on
@@ -20,30 +20,30 @@ This package provides code which glues following packages together:
 * Contribution
 
 This package is not complete and can certaintly be improved. This is
-just a extraction from my personal historically growing `init.el`
+just a extraction from my personal historically growing ~init.el~
 file. If you have a suggestion, find a bug or want to continue on this
 idea, feel free to create an issue or fork the repo.
 
 * Workflow
 The Workflow makes use of following shortcuts:
-+ `C-c l` / `(org-store-link)`: Store org-header to bookmark-list (becoms an completion candidate)
-+ `C-x x j`/ `(bookmark-jump)`: Jump to org-header (via bookmark)
++ ~C-c l~ / ~(org-store-link)~: Store org-header to bookmark-list (becoms an completion candidate)
++ ~C-x x j~/ ~(bookmark-jump)~: Jump to org-header (via bookmark)
 
 Step-by-step Guide:
 1. Run the minimal configuration
 2. Create a new org-buffer
-3. Add new header: `* Cleaning my Fondue-Caquelon`
-4. Type `C-c l` / `(org-store-link)`
+3. Add new header: ~* Cleaning my Fondue-Caquelon~
+4. Type ~C-c l~ / ~(org-store-link)~
 5. Add a description to the header beginning with "Cle"
-6. `company-mode` should suggest completion candidate `Cleaning my Fondue-Caquelon`
-7. Type `ENT` (new org-id-link created)
-9. switch to buffer `*scratch*`
-10. Type `C-x x j` / `(bookmark-jump)`
-11. Pick `Cleaning my Fondue-Caquelon` and `ENT`
+6. ~company-mode~ should suggest completion candidate ~Cleaning my Fondue-Caquelon~
+7. Type ~ENT~ (new org-id-link created)
+9. switch to buffer ~*scratch*~
+10. Type ~C-x x j~ / ~(bookmark-jump)~
+11. Pick Cleaning my Fondue-Caquelon and ~ENT~
 12. Switches to org-buffer and point jumps to the picked header
 
 This works across files and is performent because the candidates are
-hand-picked. If it get's slow, call `bookmark-list` and delete old
+hand-picked. If it get's slow, call ~bookmark-list~ and delete old
 bookmarks which became irrelevant.
 
 * Minimal configuration
