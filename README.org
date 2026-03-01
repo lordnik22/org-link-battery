@@ -1,0 +1,107 @@
+* Org Link Battery
+
+If you use [org-roam](https://github.com/org-roam/org-roam) or
+[org-brain](https://github.com/Kungsgeten/org-brain) this package is
+rather useless to you.
+
+It adds a completion-company-backend based on
+bookmark-list. bookmark-plus allows use to add a new bookmark-type:
+org-id-links.
+
+If you delete a header you have to manually delete the bookmark else
+you have dead completion-candidates.
+
+This package provides code which glues following packages together:
++ company-mode
++ org
++ org-id
++ bookmark+
+
+* Contribution
+
+This package is not complete and can certaintly be improved. This is
+just a extraction from my personal historically growing `init.el`
+file. If you have a suggestion, find a bug or want to continue on this
+idea, feel free to create an issue or fork the repo.
+
+* Workflow
+The Workflow makes use of following shortcuts:
++ `C-c l` / `(org-store-link)`: Store org-header to bookmark-list (becoms an completion candidate)
++ `C-x x j`/ `(bookmark-jump)`: Jump to org-header (via bookmark)
+
+Step-by-step Guide:
+1. Run the minimal configuration
+2. Create a new org-buffer
+3. Add new header: `* Cleaning my Fondue-Caquelon`
+4. Type `C-c l` / `(org-store-link)`
+5. Add a description to the header beginning with "Cle"
+6. `company-mode` should suggest completion candidate `Cleaning my Fondue-Caquelon`
+7. Type `ENT` (new org-id-link created)
+9. switch to buffer `*scratch*`
+10. Type `C-x x j` / `(bookmark-jump)`
+11. Pick `Cleaning my Fondue-Caquelon` and `ENT`
+12. Switches to org-buffer and point jumps to the picked header
+
+This works across files and is performent because the candidates are
+hand-picked. If it get's slow, call `bookmark-list` and delete old
+bookmarks which became irrelevant.
+
+* Minimal configuration
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
+  (straight-use-package 'el-patch)
+
+
+  (use-package bookmark+
+    :straight t
+    :init
+    (make-directory "~/.emacs.d/bookmark-plus" t)
+    :custom
+    (bmkp-bmenu-commands-file (expand-file-name "~/.emacs.d/bookmark-plus/.emacs-bmk-bmenu-commands.el"))
+    (bmkp-bmenu-state-file (expand-file-name "~/.emacs.d/bookmark-plus/.emacs-bmk-bmenu-state.el"))
+    (bmkp-bmenu-image-bookmark-icon-file (expand-file-name "~/.emacs.d/bookmark-plus/.emacs-bmk-bmenu-image-file-icon.png"))
+    (bmkp-last-as-first-bookmark-file "~/.emacs.d/emacs-bookmarks")
+    (bookmark-default-file "~/.emacs.d/emacs-bookmarks")
+    (bmkp-jump-map-prefix-keys nil)
+    :config
+    (setq bookmark-search-size 32
+          bookmark-save-flag 1))
+
+  (use-package company
+    :straight t)
+
+  (use-package org-link-battery
+    :straight (org-link-battery :type git :host github :repo "lordnik22/org-link-battery"))
+
+  (use-package org
+    :bind
+    (("C-c l" . org-store-link))
+    :hook
+    ((org-mode-hook . company-org-bookmark-hook)
+     (org-mode-hook . company-mode)))
+
+  (use-package org-id
+    :config
+    (setq org-id-link-to-org-use-id 'create-if-interactive
+  	org-id-link-to-use-id t))
+
+  (use-package ol
+    :config
+    (setq org-link-make-description-function 'org-link-battery-id-description-function)
+    (org-link-set-parameters "id" :complete 'org-link-battery-id-complete-link))
+#+end_src

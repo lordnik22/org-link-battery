@@ -1,20 +1,18 @@
-;;; org-link-battery.el --- Simple completion setup with company and bookmarks to org-headers with bookmark+ -*- lexical-binding: t -*-
+;;; org-link-battery.el --- Configure bookmark+ for auto-complete and jump-to org-headers -*- lexical-binding: t -*-
 
 ;; Author: lordnik22
 ;; Version 1.0
 ;; Package-Requires: ((emacs "29.0"))
 
 ;;; Commentary
-;; Little package that consolidates my setup code which was scadered
-;; around now consolidated into this package. The code adds a new
-;; bookmark+-bookmark-type for org-headers. It adds an company-backend
-;; that get's it's completion-candidates from the the bookmark-list
-;; (which contain enough information to create an org-id-link). This
-;; is a minimal solution, for a complete linking-solution look into
-;; org-roam or org-brain. I had bad experience with these packages,
-;; always breaking something because these are quite some behemoths.
+;; This file add a new company-bookmark-backend the
+;; completion-candidates are taken from bookmark-list. With
+;; bookmark-plus we add a new bookmark-type: org-id-links. We can use
+;; these bookmarks not only as completion-candidates but also as
+;; jump-to-candidates. The code advices org-store-link to add these
+;; new bookmarks.
 
-;;; Code
+;;; Code:
 (require 'org)
 (require 'org-id)
 (require 'bookmark+)
@@ -23,40 +21,9 @@
 (defvar org-link-battery-id-prefix "id:")
 
 ;;;###autoload
-(defun org-link-battery-ido-bmkp-jump ()
-  "Uses ido to search for the bookmark"
-  (interactive)
-  (bookmark-jump
-   (bookmark-get-bookmark
-    (ido-completing-read "Find bookmark: " (bookmark-all-names)))))
-
-(substitute-key-definition
-     'bookmark-jump 'org-link-battery-ido-bmkp-jump (current-global-map))
-
 (defun org-link-battery-id-complete-link (&optional arg)
-  "Create an id: link using completion"
+  "Create an org-id-link using completion."
   (concat org-link-battery-id-prefix (org-id-get-with-outline-path-completion '((org-agenda-files . (:maxlevel . 9))))))
-
-;;;###autoload
-(defun org-link-battery-bmkp-make-org-id-bookmark ()
-  "Used to create bookmarks to org-header identified by ID-Property."
-  (interactive)
-  (cond ((derived-mode-p 'org-mode)
-         (let* ((hid (org-id-get-create))
-                (bn (org-link-display-format (org-get-heading t t t t)))
-                (bm-bn (bmkp-get-bookmark bn 'NOERROR)))
-           (call-interactively 'org-store-link)
-           (when (not (null bm-bn))
-             (setq bn (concat bn
-                       " (" (file-name-nondirectory buffer-file-name)
-                       ":" (number-to-string (line-number-at-pos))
-                       ")")))
-           (if (and bm-bn
-                    (equal hid (cadr (caddr (bookmark-prop-get bm-bn 'function)))))
-               bm-bn
-             (bmkp-make-function-bookmark bn (backquote (lambda () (org-id-goto ,hid)))))))))
-
-
 
 ;;;###autoload
 (defun org-link-battery-id-description-function (link desc)
@@ -89,7 +56,23 @@
              (org-link-display-format (org-get-heading t t t t)))))
         (t (save-excursion (word-at-point)))))
 
+;;;; Add new bookmark-type: org-id-link
+(define-advice org-store-link (:after (&rest r))
+  (cond ((derived-mode-p 'org-mode)
+         (let* ((hid (org-id-get-create))
+                (bn (org-link-display-format (org-get-heading t t t t)))
+                (bm-bn (bmkp-get-bookmark bn 'NOERROR)))
+           (when (not (null bm-bn))
+             (setq bn (concat bn
+                              " (" (file-name-nondirectory buffer-file-name)
+                              ":" (number-to-string (line-number-at-pos))
+                              ")")))
+           (if (and bm-bn
+                    (equal hid (cadr (caddr (bookmark-prop-get bm-bn 'function)))))
+               bm-bn
+             (bmkp-make-function-bookmark bn (backquote (lambda () (org-id-goto ,hid)))))))))
 
+;;;; company-backend which uses the bookmark-list
 (defvar company-org-bookmark-available 'unknown)
 
 (defun company-org-bookmark-available ()
@@ -125,10 +108,8 @@
     (sorted t)
     (ignore-case 'keep-prefix)))
 
-
 (defun company-org-bookmark-hook ()
-              (set (make-local-variable 'company-backends) '(company-files company-org-bookmark)))
-(add-hook 'org-mode-hook 'company-org-bookmark-hook)
-
-;;;; Custom Variables
+  (if (boundp 'company-backends)
+      (add-to-list 'company-backends 'company-org-bookmark)
+    (set (make-local-variable 'company-backends) '(company-files company-org-bookmark))))
 ;;; org-link-battery.el ends here
