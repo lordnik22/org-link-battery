@@ -1,4 +1,4 @@
-;;; org-link-battery.el --- Configure bookmark+ for auto-complete and jump-to org-headers -*- lexical-binding: t -*-
+;;; org-bookmarker-plus.el --- Configure bookmark+ for auto-complete and jump-to org-headers -*- lexical-binding: t -*-
 
 ;; Author: lordnik22
 ;; Version 1.0
@@ -18,15 +18,15 @@
 (require 'bookmark+)
 (require 'company)
 
-(defvar org-link-battery-id-prefix "id:")
+(defvar org-bookmarker-plus-id-prefix "id:")
 
 ;;;###autoload
-(defun org-link-battery-id-complete-link (&optional arg)
+(defun org-bookmarker-plus-id-complete-link (&optional arg)
   "Create an org-id-link using completion."
-  (concat org-link-battery-id-prefix (org-id-get-with-outline-path-completion '((org-agenda-files . (:maxlevel . 9))))))
+  (concat org-bookmarker-plus-id-prefix (org-id-get-with-outline-path-completion '((org-agenda-files . (:maxlevel . 9))))))
 
 ;;;###autoload
-(defun org-link-battery-id-description-function (link desc)
+(defun org-bookmarker-plus-id-description-function (link desc)
   "Generate description for links"
   (interactive)
   (cond (desc desc)
@@ -49,10 +49,10 @@
                     (concat (upcase (car s)) ": " (cadr s))))
                  ((string-match-p "wikipedia" link) (concat "WIKI: " title))
                  (t title))))
-        ((string-prefix-p org-link-battery-id-prefix link)
+        ((string-prefix-p org-bookmarker-plus-id-prefix link)
          (save-window-excursion
            (save-excursion
-             (org-id-goto (string-remove-prefix org-link-battery-id-prefix link))
+             (org-id-goto (string-remove-prefix org-bookmarker-plus-id-prefix link))
              (org-link-display-format (org-get-heading t t t t)))))
         (t (save-excursion (word-at-point)))))
 
@@ -103,7 +103,7 @@
        words))
     (post-completion
      (kill-backward-chars (length arg))
-     (insert (concat "[[" org-link-battery-id-prefix (cadr (caddr (bookmark-prop-get arg 'function))) "]" "[" arg "]]")))
+     (insert (concat "[[" org-bookmarker-plus-id-prefix (cadr (caddr (bookmark-prop-get arg 'function))) "]" "[" arg "]]")))
     (kind 'text)
     (sorted t)
     (ignore-case 'keep-prefix)))
@@ -112,4 +112,4 @@
   (if (boundp 'company-backends)
       (add-to-list 'company-backends 'company-org-bookmark)
     (set (make-local-variable 'company-backends) '(company-files company-org-bookmark))))
-;;; org-link-battery.el ends here
+;;; org-bookmarker-plus.el ends here

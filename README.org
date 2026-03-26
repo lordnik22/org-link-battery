@@ -1,8 +1,10 @@
-* Org Link Battery
+* Org Bookmarker Plus
 
-If you use [[https://github.com/org-roam/org-roam][GitHub - org-roam/org-roam: Rudimentary Roam replica with Org-mode]] or
-[[https://github.com/Kungsgeten/org-brain][GitHub - Kungsgeten/org-brain: Org-mode wiki + concept-mapping]] this package is
-rather useless to you.
+If you use [[https://github.com/org-roam/org-roam][GitHub - org-roam/org-roam: Rudimentary Roam replica with
+Org-mode]], [[https://github.com/Kungsgeten/org-brain][GitHub - Kungsgeten/org-brain: Org-mode wiki +
+concept-mapping]] or [[https://github.com/meedstrom/org-node][GitHub - meedstrom/org-node: A notetaking system
+like Roam using Emacs Org-mode · GitHub]] this package is rather useless
+to you.
 
 It adds a backend to [[https://github.com/company-mode/company-mode][company-mode]] based on bookmark-list. With
 [[https://www.emacswiki.org/emacs/BookmarkPlus][bookmark-plus]] we add a new bookmark-type: org-id-links.
@@ -26,7 +28,7 @@ idea, feel free to create an issue or fork the repo.
 * Workflow
 The Workflow makes use of following shortcuts:
 + ~C-c l~ / ~(org-store-link)~: Store org-header to bookmark-list (becoms an completion candidate)
-+ ~C-x x j~/ ~(bookmark-jump)~: Jump to org-header (via bookmark)
++ ~C-x x j~ / ~(bookmark-jump)~: Jump to org-header (via bookmark)
 
 Step-by-step Guide:
 1. Run the minimal configuration
@@ -84,8 +86,8 @@ bookmarks which became irrelevant.
   (use-package company
     :straight t)
 
-  (use-package org-link-battery
-    :straight (org-link-battery :type git :host github :repo "lordnik22/org-link-battery"))
+  (use-package org-bookmarker-plus
+    :straight (org-bookmarker-plus :type git :host github :repo "lordnik22/org-bookmarker-plus"))
 
   (use-package org
     :bind
@@ -101,6 +103,6 @@ bookmarks which became irrelevant.
 
   (use-package ol
     :config
-    (setq org-link-make-description-function 'org-link-battery-id-description-function)
-    (org-link-set-parameters "id" :complete 'org-link-battery-id-complete-link))
+    (setq org-link-make-description-function 'org-bookmarker-plus-id-description-function)
+    (org-link-set-parameters "id" :complete 'org-bookmarker-plus-id-complete-link))
 #+end_src
