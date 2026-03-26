@@ -1,29 +1,35 @@
 * Org Bookmarker Plus
 
-If you use [[https://github.com/org-roam/org-roam][GitHub - org-roam/org-roam: Rudimentary Roam replica with
-Org-mode]], [[https://github.com/Kungsgeten/org-brain][GitHub - Kungsgeten/org-brain: Org-mode wiki +
+Disclaimer: If you use [[https://github.com/org-roam/org-roam][GitHub - org-roam/org-roam: Rudimentary Roam
+replica with Org-mode]], [[https://github.com/Kungsgeten/org-brain][GitHub - Kungsgeten/org-brain: Org-mode wiki +
 concept-mapping]] or [[https://github.com/meedstrom/org-node][GitHub - meedstrom/org-node: A notetaking system
 like Roam using Emacs Org-mode · GitHub]] this package is rather useless
 to you.
 
-It adds a backend to [[https://github.com/company-mode/company-mode][company-mode]] based on bookmark-list. With
-[[https://www.emacswiki.org/emacs/BookmarkPlus][bookmark-plus]] we add a new bookmark-type: org-id-links.
+It adds a backend to [[https://github.com/company-mode/company-mode][company-mode]] based on ~bookmark-list~. With
+[[https://www.emacswiki.org/emacs/BookmarkPlus][bookmark-plus]] a new bookmark-type is introduced: org-id-links. Beaware
+that only bookmarks with this new type are considered for completion.
 
-If you delete a org-header you have to manually delete the bookmark else
-you have dead completion-candidates.
+If you delete a org-header you have to manually delete the bookmark
+else you have dead completion-candidates. With ~M-x list-bookmarks~
+you can manage your bookmarks. If completion get's slow or a
+completion-candidate annoys you, you can delete these there.
 
-This package provides code which glues following packages together:
-+ [[https://github.com/company-mode/company-mode][company-mode]]
+This package evolves around following packages:
 + [[https://orgmode.org/][org]]
 + org-id
 + [[https://www.emacswiki.org/emacs/BookmarkPlus][bookmark-plus]]
++ [[https://github.com/company-mode/company-mode][company-mode]]
+
+It provides code to glue everything together. It's just a collection
+of some "config-gems" without the goal to develop a monstrosity.
 
 * Contribution
 
 This package is not complete and can certainly be improved. This is
-just a extraction from my personal historically growing ~init.el~
-file. If you have a suggestion, find a bug or want to continue on this
-idea, feel free to create an issue or fork the repo.
+just an extraction of my personal historically growing ~init.el~ file.
+If you have a suggestion, find a bug or want to continue on this idea,
+feel free to create an issue or fork the repo.
 
 * Workflow
 The Workflow makes use of following shortcuts:
@@ -42,10 +48,6 @@ Step-by-step Guide:
 10. Type ~C-x x j~ / ~(bookmark-jump)~
 11. Pick ~Cleaning my Fondue-Caquelon~ and ~ENT~
 12. Switches to org-buffer (from step 2) and point jumps to the picked header (from step 3)
-
-This works across files and is performent because the candidates are
-hand-picked. If it get's slow, call ~bookmark-list~ and delete old
-bookmarks which became irrelevant.
 
 * Minimal configuration
 #+begin_src emacs-lisp
