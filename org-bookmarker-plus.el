@@ -112,4 +112,5 @@
   (if (boundp 'company-backends)
       (add-to-list 'company-backends 'company-org-bookmark)
     (set (make-local-variable 'company-backends) '(company-files company-org-bookmark))))
+(provide 'org-bookmarker-plus)
 ;;; org-bookmarker-plus.el ends here
